@@ -235,7 +235,6 @@
         }).then(function (result) {
             if (result.value) {
                 Swal.fire({ title: "Processing...", text: "Please wait while we send the mail.", icon: "info", showCancelButton: false, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, willClose: () => { Swal.hideLoading(); } });
-
                 $.ajax({
                     type: 'POST',
                     url: "members.aspx/ApprovedMsg",
@@ -308,69 +307,69 @@
 });
 
 
-function DeliveryOrder($this) {
-    var elem = $this;
-    var OrderGuid = elem.attr('data-id');
-    var currentStatus = $('#o_r_' + OrderGuid).text();
+//function DeliveryOrder($this) {
+//    var elem = $this;
+//    var OrderGuid = elem.attr('data-id');
+//    var currentStatus = $('#o_r_' + OrderGuid).text();
 
-    if (currentStatus != "") {
-        if (currentStatus == "Delivered") {
-            Snackbar.show({ pos: 'top-right', text: 'Order already delivered!', actionTextColor: '#fff', backgroundColor: '#ea1c1c' });
-            return false;
-        }
-        if (currentStatus == "Initiated") {
-            Snackbar.show({ pos: 'top-right', text: 'dispatched Order to proceed!', actionTextColor: '#fff', backgroundColor: '#ea1c1c' });
-            return false;
-        } if (currentStatus == "Cancelled") {
+//    if (currentStatus != "") {
+//        if (currentStatus == "Delivered") {
+//            Snackbar.show({ pos: 'top-right', text: 'Order already delivered!', actionTextColor: '#fff', backgroundColor: '#ea1c1c' });
+//            return false;
+//        }
+//        if (currentStatus == "Initiated") {
+//            Snackbar.show({ pos: 'top-right', text: 'dispatched Order to proceed!', actionTextColor: '#fff', backgroundColor: '#ea1c1c' });
+//            return false;
+//        } if (currentStatus == "Cancelled") {
 
-            Snackbar.show({ pos: 'top-right', text: 'Order is already cancelled!', actionTextColor: '#fff', backgroundColor: '#ea1c1c' });
-            return false;
-        }
-    }
+//            Snackbar.show({ pos: 'top-right', text: 'Order is already cancelled!', actionTextColor: '#fff', backgroundColor: '#ea1c1c' });
+//            return false;
+//        }
+//    }
 
-    var oStatus = "Delivered";
+//    var oStatus = "Delivered";
 
-    Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: !0,
-        confirmButtonClass: "btn btn-primary w-xs me-2 mt-2",
-        cancelButtonClass: "btn btn-danger w-xs mt-2",
-        confirmButtonText: "Yes, update it!",
-        buttonsStyling: !1,
-        showCloseButton: !0,
-    }).then(function (result) {
-        if (result.value) {
-            Swal.fire({ title: "Processing...", text: "Please wait while we update the order.", icon: "info", showCancelButton: false, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, willClose: () => { Swal.hideLoading(); } });
+//    Swal.fire({
+//        title: "Are you sure?",
+//        text: "You won't be able to revert this!",
+//        icon: "warning",
+//        showCancelButton: !0,
+//        confirmButtonClass: "btn btn-primary w-xs me-2 mt-2",
+//        cancelButtonClass: "btn btn-danger w-xs mt-2",
+//        confirmButtonText: "Yes, update it!",
+//        buttonsStyling: !1,
+//        showCloseButton: !0,
+//    }).then(function (result) {
+//        if (result.value) {
+//            Swal.fire({ title: "Processing...", text: "Please wait while we update the order.", icon: "info", showCancelButton: false, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, willClose: () => { Swal.hideLoading(); } });
 
-            $.ajax({
-                type: 'POST',
-                url: "order-report.aspx/UpdateOrderStatusDelivered",
-                data: "{OrderGuid: '" + OrderGuid + "', oStatus: '" + oStatus + "'}",
-                contentType: 'application/json; charset=utf-8',
-                dataType: "json",
-                async: true,
-                success: function (data2) {
-                    if (data2.d.toString() == "Success") {
-                        var orderStatusBadge = "<a href='javascript:void(0);' data-id='" + OrderGuid + "' data-sts='" + oStatus + "' class='badge badge-outline-success'>" + oStatus + "</a>";
+//            $.ajax({
+//                type: 'POST',
+//                url: "order-report.aspx/UpdateOrderStatusDelivered",
+//                data: "{OrderGuid: '" + OrderGuid + "', oStatus: '" + oStatus + "'}",
+//                contentType: 'application/json; charset=utf-8',
+//                dataType: "json",
+//                async: true,
+//                success: function (data2) {
+//                    if (data2.d.toString() == "Success") {
+//                        var orderStatusBadge = "<a href='javascript:void(0);' data-id='" + OrderGuid + "' data-sts='" + oStatus + "' class='badge badge-outline-success'>" + oStatus + "</a>";
 
-                        Swal.fire({ title: "Delivered!", text: "Order has been delivered.", icon: "success", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: false })
+//                        Swal.fire({ title: "Delivered!", text: "Order has been delivered.", icon: "success", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: false })
 
-                        $("#o_r_" + OrderGuid).html(orderStatusBadge);
-                    }
-                    else if (data2.d.toString() == "Permission") {
-                        Swal.fire({ title: "Oops...", text: "Permission denied! Please contact to your administrator.", icon: "error", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: !1, footer: '', showCloseButton: !0 });
-                    } else if (data2.d.toString() == "Pending") {
+//                        $("#o_r_" + OrderGuid).html(orderStatusBadge);
+//                    }
+//                    else if (data2.d.toString() == "Permission") {
+//                        Swal.fire({ title: "Oops...", text: "Permission denied! Please contact to your administrator.", icon: "error", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: !1, footer: '', showCloseButton: !0 });
+//                    } else if (data2.d.toString() == "Pending") {
 
-                        Swal.fire({ title: "Oops...", text: "Oops! To Remove Sponser the Payout should be in Pending Stage.", icon: "error", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: !1, footer: '', showCloseButton: !0 });
-                    }
-                    else {
-                        Swal.fire({ title: "Oops...", text: "Something went wrong!", icon: "error", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: !1, footer: '', showCloseButton: !0 });
-                    }
-                }
-            });
-        }
-    });
+//                        Swal.fire({ title: "Oops...", text: "Oops! To Remove Sponser the Payout should be in Pending Stage.", icon: "error", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: !1, footer: '', showCloseButton: !0 });
+//                    }
+//                    else {
+//                        Swal.fire({ title: "Oops...", text: "Something went wrong!", icon: "error", confirmButtonClass: "btn btn-primary w-xs mt-2", buttonsStyling: !1, footer: '', showCloseButton: !0 });
+//                    }
+//                }
+//            });
+//        }
+//    });
 
-}
+//}

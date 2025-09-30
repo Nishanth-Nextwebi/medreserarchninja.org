@@ -15,6 +15,8 @@ public class Emails
     {
         try
         {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(emails);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -998,7 +1000,8 @@ public class Emails
 
 
             #endregion
-
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -1024,6 +1027,8 @@ public class Emails
     {
         try
         {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
 
@@ -1535,7 +1540,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
     {
         try
         {
-
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(ConfigurationManager.AppSettings["ToMail"]);
             if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["CCMail"]))
@@ -2049,10 +2055,9 @@ Your password remains unchanged.</p></td> </tr> <tr>
         </table>
     </center>
 </body>
-
-
-
 </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -2203,6 +2208,9 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                         </div>
                                     </body>
                                 </html>";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -2318,6 +2326,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                         </div>
                                     </body>
                                     </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(ConfigurationManager.AppSettings["ToMail"]);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -2480,6 +2490,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                             </div>
                                         </body>
                                         </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -2594,6 +2606,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                         </div>
                                     </body>
                                     </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(ConfigurationManager.AppSettings["ToMail"]);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -2711,6 +2725,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                         </div>
                                     </body>
                                     </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress("projects@medresearchninja.org", ConfigurationManager.AppSettings["fromName"]);
@@ -2829,6 +2845,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                             </div>
                                         </body>
                                         </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(ConfigurationManager.AppSettings["ToMail"]);
             mail.From = new MailAddress("projects@medresearchninja.org", ConfigurationManager.AppSettings["fromName"]);
@@ -2921,6 +2939,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                         </div>
                                     </body>
                                     </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -3015,6 +3035,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                             </div>
                                         </body>
                                     </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -3125,6 +3147,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
                                         </div>
                                     </body>
                                     </html>";
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(email);
             mail.From = new MailAddress("projects@medresearchninja.org", ConfigurationManager.AppSettings["fromName"]);
@@ -3659,7 +3683,9 @@ Your password remains unchanged.</p></td> </tr> <tr>
     </center>
 </body>
 </html>";
-            #endregion    
+            #endregion
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(ConfigurationManager.AppSettings["ToMail"]);
             mail.From = new MailAddress(ConfigurationManager.AppSettings["from"], ConfigurationManager.AppSettings["fromName"]);
@@ -3781,7 +3807,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
   </body>
 </html>";
             #endregion
-
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(emails);
             if (ccEmail != "")
@@ -3909,7 +3936,8 @@ Your password remains unchanged.</p></td> </tr> <tr>
   </body>
 </html>";
             #endregion
-
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MailMessage mail = new MailMessage();
             mail.To.Add(ConfigurationManager.AppSettings["ToMail"]);
             if (ConfigurationManager.AppSettings["CCMail"] != "")
