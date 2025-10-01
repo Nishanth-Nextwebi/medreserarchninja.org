@@ -10,13 +10,15 @@
             width: 200px !important;
             word-break: break-word;
         }
-        .fs-8{
-            font-size:8px;
+
+        .fs-8 {
+            font-size: 8px;
         }
+
         .topbar-badge {
-    right: -16px;
-    top: 1px !important;
-}
+            right: -16px;
+            top: 1px !important;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -207,7 +209,7 @@
                 //enableTime: true,
                 dateFormat: "d-M-Y",
                 mode: "range",
-               
+
             });
         });
     </script>

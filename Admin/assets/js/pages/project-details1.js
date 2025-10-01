@@ -38,6 +38,7 @@
         var m_guid = $this.attr("data-guid");
         var p_guid = getUrlParameter("id");
         var amount = $("#txtAmount").val();
+        var amountUSd = $("#txtUSDAmount").val();
         var cmts = $("#txtComment").val();
         var flag = 0;
         if (amount == "") {
@@ -49,11 +50,20 @@
             $("#txtAmount").parent().parent().find(".fs-label-wrap").removeClass("input-error");
             $("#txtAmount").parent().parent().find(".error").html("");
         }
+        if (amountUSd == "") {
+            flag = 1;
+            $("#txtUSDAmount").parent().parent().find(".fs-label-wrap").addClass("input-error");
+            $("#txtUSDAmount").parent().parent().find(".error").html("Field can't be empty");
+        }
+        else {
+            $("#txtUSDAmount").parent().parent().find(".fs-label-wrap").removeClass("input-error");
+            $("#txtUSDAmount").parent().parent().find(".error").html("");
+        }
 
         if (flag == 0) {
             Swal.fire({ title: "Processing", text: "Saving payment details and sending notification to the member. Please wait...", icon: "info", showCancelButton: false, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, willClose: () => { Swal.hideLoading(); } });
 
-            var _data = { p_guid: p_guid, m_guid: m_guid, amount: amount, cmts: cmts };
+            var _data = { p_guid: p_guid, m_guid: m_guid, amount: amount, amountUSd: amountUSd, cmts: cmts };
             $.ajax({
                 type: 'POST',
                 url: "project-details.aspx/SendNotification",
@@ -241,7 +251,7 @@
                     $.ajax({
                         type: 'POST',
                         url: "project-details.aspx/AddMembers",
-                        data: "{mem_guid: '" + mem_guid + "',tranId:'" + tranId + "',ProjectGuid:'" + ProjectGuid +"'}",
+                        data: "{mem_guid: '" + mem_guid + "',tranId:'" + tranId + "',ProjectGuid:'" + ProjectGuid + "'}",
                         contentType: 'application/json; charset=utf-8',
                         //dataType: "json",
                         async: true,
@@ -305,7 +315,7 @@ function BindProjectDetails() {
                     $("#lblPostedOn1").html(getDateTimeForm(project_.PostedOn));
 
                     $("#lblPrice").html("<span class='fw-bold'>₹ " + project_.PriceINR + "</span>");
-                    $("#lblOtherPrice").html(project_.PriceOther);
+                    $("#lblOtherPrice").html("<span class='fw-bold'>$ " + project_.PriceOther + "</span>");
 
                     var _css = "";
                     var ttlMCount = parseInt(project_.mCount) || 0;
@@ -374,15 +384,27 @@ function BindProjectDues() {
             success: function (data) {
                 var oItems = data.d;
                 var rwo = "";
+
+
                 if (oItems != null) {
                     for (var i = 0; i < oItems.length; i++) {
+                        var amountPaid = "0";
+                        if (oItems[i].PaymentStatus == "Paid") {
+                            if (oItems[i].PaymentMode.toLowerCase() == "payu") {
+                                amountPaid = "<td>₹" + oItems[i].Amount + "</td>";
+                            } else {
+                                amountPaid = "<td>$" + oItems[i].AmountUSD + "</td>";
+                            }
+                        }
+
                         var email = oItems[i].EmailId === "" ? "<a href='javascript:void(0);' class='bs-tooltip text-muted fs-18 mr-5px' data-bs-toggle='tooltip' data-placement='top' title='this order does not have email id to send reminder'><i class='mdi mdi-email-off'></i></a>" : "<a href='javascript:void();' class='bs-tooltip text-danger fs-18 mr-5px paymentDueMailReminder' data-id='" + oItems[i].id + "' data-guid='" + oItems[i].PaymentGuid + "' data-bs-toggle='tooltip' data-placement='top' title='Send Payment Due Reminder'><i class='mdi mdi-email'></i></a>";
 
                         rwo += "<tr class='" + (oItems[i].PaymentStatus == "Paid" ? "table-success" : "") + "'>";
                         rwo += "<td>" + (i + 1) + "</td>";
                         rwo += "<td><a href='javascript:void(0);' class='badge badge-outline-primary'>" + oItems[i].UserID + "</a></td>";
                         rwo += "<td>" + oItems[i].FullName + "</td>";
-                        rwo += "<td>₹" + oItems[i].Amount + "</td>";
+                        rwo += "<td>₹" + oItems[i].Amount + " (~$" + oItems[i].AmountUSD + ")</td>";
+                        rwo += amountPaid;
                         if (oItems[i].PaymentStatus == "Paid") {
                             rwo += "<td><span class='badge badge-outline-success'>" + oItems[i].PaymentStatus + "</span></td>";
                             email = "<a href='javascript:void(0);' class='bs-tooltip text-muted fs-18 mr-5px text-muted' data-bs-toggle='tooltip' data-placement='top' title='Payment Paid'><i class='mdi mdi-email-check'></i></a>";

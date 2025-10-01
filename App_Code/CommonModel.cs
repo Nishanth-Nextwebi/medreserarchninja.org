@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -376,6 +377,70 @@ public class CommonModel
         return result;
     }
 
+    public static string GetCountryByIP(string ipAddress)
+    {
+        try
+        {
+            if (ipAddress == "::1" || ipAddress == "127.0.0.1" || ipAddress.StartsWith("192.168."))
+            {
+                return "IN";
+            }
 
+            string url = "http://ip-api.com/json/" + ipAddress;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.Timeout = 5000;
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            {
+                string json = reader.ReadToEnd();
+                JObject data = JObject.Parse(json);
+
+                if (data["status"].ToString() == "success")
+                {
+                    return data["countryCode"].ToString();
+                    //return "US";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ExceptionCapture.CaptureException("CountryHelper", "GetCountryByIP", ex.Message);
+        }
+        return "IN";
+    }
+
+    public static string GetUserIPAddress()
+    {
+        string ipAddress = string.Empty;
+
+        try
+        {
+            ipAddress = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (string.IsNullOrEmpty(ipAddress))
+            {
+                ipAddress = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            }
+
+            if (!string.IsNullOrEmpty(ipAddress) && ipAddress.Contains(","))
+            {
+                ipAddress = ipAddress.Split(',')[0].Trim();
+            }
+        }
+        catch
+        {
+            ipAddress = "127.0.0.1";
+        }
+
+        return ipAddress;
+    }
+
+    public static bool IsIndianUser(string countryCode)
+    {
+        return countryCode.Equals("IN", StringComparison.OrdinalIgnoreCase);
+    }
 
 }

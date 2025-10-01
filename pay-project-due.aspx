@@ -218,16 +218,30 @@
                                             <h4 class="mb-4 text-white">Complete Your Payment</h4>
 
                                             <!-- 3. Payment Details -->
+                                            <!-- Modify the payment section -->
                                             <div class="text-start mb-3 mb-4 text-white p-details">
                                                 <p><strong>Project Code:</strong> <%=ProjectCode %></p>
                                                 <p><strong>Project Name:</strong> <%=Projectname %></p>
                                                 <p><strong>User Name:</strong> <%=buyerName %></p>
                                                 <p><strong>Email ID:</strong> <%=buyerEmail %></p>
                                                 <p><strong>Contact:</strong> <%=BuyerMobile %></p>
+                                                <% if (!IsPayPalPayment)
+                                                    { %>
                                                 <p><strong>Total Amount:</strong> <%=strTotal %></p>
+                                                <% }
+                                                    else
+                                                    { %>
+                                                <p>
+                                                    <strong>Total Amount:</strong> <%=strTotal %>
+                                                    <small class="text-muted">(Approx. $<%=Math.Round(Convert.ToDecimal(strTotal.Replace("₹", "").Replace(",", "")) * 0.012M, 2) %>)
+            </small>
+                                                </p>
+                                                <% } %>
                                             </div>
 
-                                            <!-- 4. PayU Payment Form -->
+                                            <% if (!IsPayPalPayment)
+                                                { %>
+                                            <!-- PayU Form -->
                                             <form action='<%=ConfigurationManager.AppSettings["ENVURL"] %>_payment' method='post'>
                                                 <input type="hidden" name="key" value="<%=strKey %>" />
                                                 <input type="hidden" name="txnid" value="<%=strTRid %>" />
@@ -240,9 +254,20 @@
                                                 <input type="hidden" name="phone" value="<%=strPhone %>" />
                                                 <input type="hidden" name="hash" value="<%=strHash %>" />
 
-                                                <!-- 5. Payment Button -->
+                                                <!-- Payment Button -->
                                                 <input type="submit" value="Proceed to Pay" class="btnpay btn btn-danger text-white px-4 py-2 mt-3" />
                                             </form>
+                                            <% }
+                                                else
+                                                { %>
+                                            <!-- PayPal Redirect Message -->
+                                            <div class="text-center">
+                                                <div class="spinner-border text-primary mb-3" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                                <p class="text-white">Redirecting to PayPal...</p>
+                                            </div>
+                                            <% } %>
 
                                             <!-- 6. Instruction -->
                                             <p class="mt-3 text-light" style="font-size: 13px;">

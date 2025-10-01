@@ -218,13 +218,6 @@
                                     </div>
                                     <div class="row mt-5">
                                         <div class="col-lg-12">
-
-
-
-
-
-
-
                                             <div class="pay-details d-flex align-items-center">
                                                 <div class="pay-left">
                                                     <h4>Project Code: &nbsp</h4>
@@ -286,38 +279,40 @@
                                                 </div>
                                             </div>
                                             <hr />
+
+                                            <!-- Modify the payment section -->
                                             <div class="checkout-details-in amount-payable d-flex justify-content-start">
-                                                <%--<form runat="server">
-                                                   <asp:Button ID="btn_pay_now" runat="server" Text="Pay Now" class="payment-button" OnClick="btn_pay_now_Click"></asp:Button>
-                                                </form>--%>
+                                                <% if (!IsPayPalPayment)
+                                                { %>
+                                                <!-- PayU Form (existing) -->
                                                 <div class="row w100">
                                                     <div class="col-lg-12">
-                                                        <div class="row w100">
-
-                                                            <form action='<%=ConfigurationManager.AppSettings["ENVURL"] %>_payment' method='post'>
-                                                                <input type="hidden" name="key" value="<%=strKey %>" />
-                                                                <input type="hidden" name="txnid" value="<%=strTRid %>" />
-                                                                <input type="hidden" name="productinfo" value="<%=strPInfo %>" />
-                                                                <input type="hidden" name="amount" value="<%=strAmount %>" />
-                                                                <input type="hidden" name="email" value="<%=strEmail %>" />
-                                                                <input type="hidden" name="firstname" value="<%=strFName %>" />
-                                                                <%--<input type="hidden" name="lastname" value="<%=strLname %>" />--%>
-                                                                <input type="hidden" name="surl" value="<%=strSUrl %>" />
-                                                                <input type="hidden" name="furl" value="<%=strFUrl %>" />
-                                                                <input type="hidden" name="phone" value="<%=strPhone %>" />
-                                                                <input type="hidden" name="hash" value="<%=strHash %>" />
-                                                                <input type="submit" value="Submit" class="btnpay">
-                                                            </form>
-                                                            <script src="/js/jquery-3.6.4.min.js"></script>
-                                                            <script>
-                                                                $(document).ready(function () {
-                                                                    $(".btnpay").addClass("btn btn-danger btn-hover-dark text-white");
-                                                                    //$(".btnpay").click();
-                                                                });
-                                                            </script>
-                                                        </div>
+                                                        <form action='<%=ConfigurationManager.AppSettings["ENVURL"] %>_payment' method='post'>
+                                                            <input type="hidden" name="key" value="<%=strKey %>" />
+                                                            <input type="hidden" name="txnid" value="<%=strTRid %>" />
+                                                            <input type="hidden" name="productinfo" value="<%=strPInfo %>" />
+                                                            <input type="hidden" name="amount" value="<%=strAmount %>" />
+                                                            <input type="hidden" name="email" value="<%=strEmail %>" />
+                                                            <input type="hidden" name="firstname" value="<%=strFName %>" />
+                                                            <input type="hidden" name="surl" value="<%=strSUrl %>" />
+                                                            <input type="hidden" name="furl" value="<%=strFUrl %>" />
+                                                            <input type="hidden" name="phone" value="<%=strPhone %>" />
+                                                            <input type="hidden" name="hash" value="<%=strHash %>" />
+                                                            <input type="submit" value="Pay with PayU" class="btn btn-danger btn-hover-dark text-white">
+                                                        </form>
                                                     </div>
                                                 </div>
+                                                <% }
+                                                else
+                                                { %>
+                                                <!-- PayPal Redirect Message -->
+                                                <div class="text-center">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only">Loading...</span>
+                                                    </div>
+                                                    <p class="mt-3">Redirecting to PayPal...</p>
+                                                </div>
+                                                <% } %>
                                             </div>
                                         </div>
                                     </div>
@@ -448,7 +443,7 @@
         </div>
     </section>
     <a class="scrollToHome at-home2" href="javascript:void(0);"><i class="fas fa-angle-up"></i></a>
-    </div>
+
     <script src="/js/jquery-3.6.4.min.js"></script>
     <script src="/js/snackbar/snackbar.min.js"></script>
     <script src="/js/popper.min.js"></script>

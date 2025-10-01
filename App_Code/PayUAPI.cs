@@ -96,6 +96,7 @@ public class PayUAPI
             var salt = ConfigurationManager.AppSettings["SALTKey"].ToString();
             var Key = ConfigurationManager.AppSettings["KeyID"].ToString();
             var EndPoint = "https://info.payu.in";
+            //var EndPoint = "https://test.payu.in/";
             //ConfigurationManager.AppSettings["ENVURL"].ToString();
 
             var hash = GenerateVerifyHash(Key, "verify_payment", Oid, salt);

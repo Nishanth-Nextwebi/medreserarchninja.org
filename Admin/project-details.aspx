@@ -101,7 +101,7 @@
                                         <div class="hstack gap-1 flex-wrap">
                                             <a href="javascript:void(0);" id="addwhatsapps" target="_blank" class="avatar-xs d-block bs-tooltip" data-bs-toggle="tooltip" title='WhatsApp Group Invitation'>
                                                 <span class="avatar-title rounded-circle fs-18 bg-success shadow"><i class="ri-whatsapp-line fs-18"></i></span>
-                                            </a>    
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -171,12 +171,12 @@
                                                     </div>
                                                     <div class="col-lg-12">
                                                         <div class="mb-1">
-                                                            <label class="form-label">PriceINR : <span id="lblPrice"></span></label>
+                                                            <label class="form-label">Price INR : <span id="lblPrice"></span></label>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-12">
                                                         <div class="mb-1">
-                                                            <label class="form-label">Price Other	 : <span class="badge text-bg-danger fs-12" id="lblOtherPrice"></span></label>
+                                                            <label class="form-label">Price USD	 : <span id="lblOtherPrice"></span></label>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-12">
@@ -280,8 +280,9 @@
                                                             <th>Member Id </th>
                                                             <th>Member Name </th>
                                                             <th>Amount </th>
+                                                            <th>Paid Amount </th>
                                                             <th>Status </th>
-                                                            <th>Mode </th>
+                                                            <th>Payment By</th>
                                                             <th>Trans. Id </th>
                                                             <th>Added On </th>
                                                             <th>Comments </th>
@@ -322,8 +323,15 @@
                     <div class="row">
                         <div class="col-md-6 mt-2">
                             <div class="mb-2">
-                                <label class="form-label">Amount <sup>*</sup></label>
+                                <label class="form-label">Amount INR<sup>*</sup></label>
                                 <input id="txtAmount" maxlength="50" class="form-control txtAmount" />
+                                <span class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <div class="mb-2">
+                                <label class="form-label">Amount USD<sup>*</sup></label>
+                                <input id="txtUSDAmount" maxlength="50" class="form-control txtUSDAmount" />
                                 <span class="error"></span>
                             </div>
                         </div>
@@ -367,7 +375,7 @@
                         </div>
                         <div class="col-lg-3">
                             <label>Transaction Id</label>
-                            <input  id="txttrans" class="txttrans form-control" maxlength="30" placeholder="Enter transaction id..." />
+                            <input id="txttrans" class="txttrans form-control" maxlength="30" placeholder="Enter transaction id..." />
                         </div>
                         <div class="col-lg-3">
                             <a href="javascrit:void(0);" class="btn btn-danger m-t-25 btncontinue">Continue..</a>

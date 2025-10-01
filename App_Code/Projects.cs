@@ -468,13 +468,14 @@ public class Projects
         int result = 0;
         try
         {
-            string query = "Insert Into ProjectDues (ProjectGuid, UserGuid, PaymentGuid, Amount, Comments, PaymentMode, PaymentId, PaymentStatus, tr_id, AddedOn, AddedIP, AddedBy, Status) values (@ProjectGuid, @UserGuid, @PaymentGuid, @Amount, @Comments, @PaymentMode, @PaymentId, @PaymentStatus, @tr_id, @AddedOn, @AddedIP, @AddedBy, @Status)";
+            string query = "Insert Into ProjectDues (ProjectGuid,AmountUSD, UserGuid, PaymentGuid, Amount, Comments, PaymentMode, PaymentId, PaymentStatus, tr_id, AddedOn, AddedIP, AddedBy, Status) values (@ProjectGuid,@AmountUSD, @UserGuid, @PaymentGuid, @Amount, @Comments, @PaymentMode, @PaymentId, @PaymentStatus, @tr_id, @AddedOn, @AddedIP, @AddedBy, @Status)";
             using (SqlCommand cmd = new SqlCommand(query, _conn))
             {
                 cmd.Parameters.AddWithValue("@ProjectGuid", SqlDbType.NVarChar).Value = dues.ProjectGuid;
                 cmd.Parameters.AddWithValue("@UserGuid", SqlDbType.NVarChar).Value = dues.UserGuid;
                 cmd.Parameters.AddWithValue("@PaymentGuid", SqlDbType.NVarChar).Value = dues.PaymentGuid;
                 cmd.Parameters.AddWithValue("@Amount", SqlDbType.NVarChar).Value = dues.Amount;
+                cmd.Parameters.AddWithValue("@AmountUSD", SqlDbType.NVarChar).Value = dues.AmountUSD;
                 cmd.Parameters.AddWithValue("@Comments", SqlDbType.NVarChar).Value = dues.Comments;
                 cmd.Parameters.AddWithValue("@PaymentMode", SqlDbType.NVarChar).Value = dues.PaymentMode;
                 cmd.Parameters.AddWithValue("@PaymentId", SqlDbType.NVarChar).Value = dues.PaymentId;
@@ -663,6 +664,7 @@ public class ProjectDues
     public string EmailId { get; set; }
     public string PaymentGuid { get; set; }
     public string Amount { get; set; }
+    public string AmountUSD { get; set; }
     public string Comments { get; set; }
     public string PaymentMode { get; set; }
     public string PaymentId { get; set; }

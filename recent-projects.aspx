@@ -188,6 +188,10 @@
     width:max-content;
     margin:10px 0px;
   }
+
+
+
+
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">

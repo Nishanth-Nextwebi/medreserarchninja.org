@@ -258,6 +258,7 @@ public class PReports
                               Discount = Convert.ToString(dr["Discount"]),
                               AddDiscount = Convert.ToString(dr["AddDiscount"]),
                               TotalPrice = Convert.ToString(dr["TotalPrice"]),
+                              PriceUSD = Convert.ToString(dr["PriceUSD"]),
                               UserGuid = Convert.ToString(dr["UserGuid"]),
                               UserType = Convert.ToString(dr["UserType"]),
                               UserName = Convert.ToString(dr["name1"]),

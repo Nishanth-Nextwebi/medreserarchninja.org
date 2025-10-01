@@ -1,23 +1,17 @@
 ﻿using ClosedXML.Excel;
+using PayPal.Api;
 using Razorpay.Api;
 using System;
-using System.Activities.Expressions;
-using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Web;
-using System.Web.Query.Dynamic;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 public partial class pay_now : System.Web.UI.Page
 {
@@ -26,219 +20,204 @@ public partial class pay_now : System.Web.UI.Page
     public string strScrollText = "", strMobLogin = "", strDeskLogin = "", strDeskText = "", strOrders = "", strDeskNavCategory = "", strMobNavCategories = "", strDelivery = "", strBilling = "", strSubTotal = "", strShipping = "", strDiscount = "", strCoupnDiscount = "", strTax = "", strTotal = "", buyerAmount = "", orderIdd = "", buyerName = "", BuyerMobile = "", buyerEmail = "", paybleAmount = "", strRazorId = "", strRazorSecret = "";
     public string strKey = "", strTRid = "", strPInfo = "", strFName = "", strLname = "", strSUrl = "", strFUrl = "", strPhone = "", strHash = "";
 
+    // PayPal related variables
+    public bool IsPayPalPayment = false;
+    public string UserCountryCode = "";
+    public string PaymentGateway = "";
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Request.QueryString["order"] == null)
         {
-            Response.Redirect("/");
+            Response.Redirect("/", false);
+            HttpContext.Current.ApplicationInstance.CompleteRequest();
+            return;
         }
+
         try
         {
+            string userIP = CommonModel.GetUserIPAddress();
+            UserCountryCode = CommonModel.GetCountryByIP(userIP);
+            IsPayPalPayment = !CommonModel.IsIndianUser(UserCountryCode);
+            PaymentGateway = IsPayPalPayment ? "PayPal" : "PayU";
+
             double cost = 0;
-            string cart = string.Empty;
             var ord = Reports.GetSingleOrderDetails(conMN, Request.QueryString["order"]).FirstOrDefault();
+
             if (ord != null)
             {
                 strTotal = Convert.ToDecimal(ord.TotalPrice).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-
                 buyerEmail = ord.EmailId;
                 buyerName = ord.UserName;
                 BuyerMobile = ord.Contact;
                 cost = Convert.ToDouble(ord.TotalPrice);
-                paybleAmount = cost.ToString(); ;
-                buyerAmount = (cost * 100).ToString();
-                var salt = ConfigurationManager.AppSettings["SALTKey"];
-
-                strKey = ConfigurationManager.AppSettings["KeyID"];
-
-                var domain = ConfigurationManager.AppSettings["domain"];
-                var details = new PayUAPIRequest()
+                paybleAmount = cost.ToString();
+                // Force PayPal to charge $10 (USD)
+                string usdAmount = "10.00";
+                if (IsPayPalPayment)
                 {
-                    Address1 = "",
-                    Address2 = "",
-                    Amount = Convert.ToDouble(cost),
-                    City = "",
-                    State = "",
-                    Country = "",
-                    Email = ord.EmailId,
-                    FirstName = ord.UserName,
-                    LastName = "",
-                    Furl = domain + "payment-failed.aspx?O=" + ord.OrderId,
-                    Surl = domain + "payment-success.aspx?O=" + ord.OrderId,
-                    Phone = ord.Contact,
-                    ProductInfo = "New Membership",
-                    Txnid = ord.OrderGuid,
-                    Zipcode = "",
-                    Key = strKey
-                };
-                strTRid = details.Txnid;
-                strPInfo = details.ProductInfo;
-                strAmount = details.Amount.ToString();
-                strEmail = details.Email;
-                strFName = details.FirstName;
-                strSUrl = details.Surl;
-                strFUrl = details.Furl;
-                strPhone = details.Phone;
-                strHash = GenerateHash(details, salt);
-                //var exe = PayUAPI.CreatePayment(details);
-                //if (exe != null)
-                //{
-
-                //}
-                //buyerAmount = "450";
-                //Session["payble"] = buyerAmount;
-                //Dictionary<string, object> input = new Dictionary<string, object>();
-                //input.Add("amount", buyerAmount); // this amount should be same as transaction amount
-                //input.Add("currency", "INR");
-                //input.Add("receipt", orderid);
-                //input.Add("payment_capture", 1);
-                //RazorpayClient client = new RazorpayClient(ConfigurationManager.AppSettings["razorid"], ConfigurationManager.AppSettings["razorsecret"]);
-                //ServicePointManager.Expect100Continue = true;
-                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                //Razorpay.Api.Order order = client.Order.Create(input);
-                //orderIdd = order["id"].ToString();
+                    InitializePayPalPayment(ord.OrderGuid, usdAmount, ord.OrderId, ord.UserName, ord.EmailId);
+                }
+                else
+                {
+                    InitializePayUPayment(ord, cost);
+                }
             }
-
+        }
+        catch (ThreadAbortException)
+        {
+            // This is expected - don't log it
         }
         catch (Exception ex)
         {
-
+            ExceptionCapture.CaptureException(HttpContext.Current.Request.Url.PathAndQuery, "pay_now_PageLoad", ex.Message);
+            Response.Redirect("pay-error.aspx", false);
+            HttpContext.Current.ApplicationInstance.CompleteRequest();
         }
-
-        //CreateOrder();
-        //getMemberdetails();
     }
 
-    //private void bindValues()
-    //{
-    //    if (Request.QueryString["order"] == null)
-    //    {
-    //        Response.Redirect("/");
-    //    }
-    //    try
-    //    {
-    //        // double cost = 0;
-    //        string orderid = Convert.ToString(Request.QueryString["order"]);
-    //        Session["orderid"] = orderid;
-    //        string cart = string.Empty;
-    //        var ord = Reports.GetSingleOrderDetails(conMN, Request.QueryString["order"]).FirstOrDefault();
-    //        if (ord != null)
-    //        {
-    //            // strBilling = ord.BillingAddress;
-    //            //strDelivery = ord.DeliveryAddress;
-    //            // cost = Convert.ToDouble(ord.TotalPrice);
-    //            //strSubTotal = ord.SubTotal == "0" || ord.SubTotal == "" || ord.SubTotal == null ? "₹ 0" : Convert.ToDecimal(ord.SubTotal).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            // strShipping = ord.ShippingPrice == "0" || ord.ShippingPrice == "" || ord.ShippingPrice == null ? "₹ 0" : Convert.ToDecimal(ord.ShippingPrice).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            // strDiscount = ord.Discount == "0" || ord.Discount == "" || ord.Discount == null ? "₹ 0" : Convert.ToDecimal(ord.Discount).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            //strCoupnDiscount = ord.Discount == "0" || ord.Discount == "" || ord.Discount == null ? "₹ 0" : Convert.ToDecimal(ord.Discount).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            //strTax = Convert.ToDecimal(ord.Tax).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            strTotal = Convert.ToDecimal(450).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-
-    //            // divDiscount.Visible = false;
-    //            buyerEmail = ord.EmailId;
-    //            buyerName = ord.UserName;
-    //            BuyerMobile = ord.Contact;
-
-    //            buyerAmount = "450";
-
-    //            Session["payble"] = buyerAmount;
-
-    //            Dictionary<string, object> input = new Dictionary<string, object>();
-    //            input.Add("amount", buyerAmount); // this amount should be same as transaction amount
-    //            input.Add("currency", "INR");
-    //            input.Add("receipt", orderid);
-    //            input.Add("payment_capture", 1);
-    //            RazorpayClient client = new RazorpayClient(strRazorId, strRazorSecret);
-    //            ServicePointManager.Expect100Continue = true;
-    //            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-    //            Razorpay.Api.Order order = client.Order.Create(input);
-    //            orderIdd = order["id"].ToString();
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-
-    //    }
-    //}
-
-    protected void CreateOrder()
+    private void InitializePayUPayment(dynamic ord, double cost)
     {
-
-    }
-    public void CreateVisitedUser()
-    {
-        if (HttpContext.Current.Request.Cookies["med_cust"] == null)
+        try
         {
-            HttpCookie cookie = new HttpCookie("med_cust");
-            cookie.Value = Guid.NewGuid().ToString();
-            cookie.Expires = TimeStamps.UTCTime().AddDays(30);
-            Response.Cookies.Add(cookie);
+            buyerAmount = (cost * 100).ToString();
+            var salt = ConfigurationManager.AppSettings["SALTKey"];
+            strKey = ConfigurationManager.AppSettings["KeyID"];
+            var domain = ConfigurationManager.AppSettings["domain"];
+
+            var details = new PayUAPIRequest()
+            {
+                Address1 = "",
+                Address2 = "",
+                Amount = cost,
+                City = "",
+                State = "",
+                Country = "",
+                Email = ord.EmailId,
+                FirstName = ord.UserName,
+                LastName = "",
+                Furl = domain + "payment-failed.aspx?O=" + ord.OrderId,
+                Surl = domain + "payment-success.aspx?O=" + ord.OrderId,
+                Phone = ord.Contact,
+                ProductInfo = "New Membership",
+                Txnid = ord.OrderGuid,
+                Zipcode = "",
+                Key = strKey
+            };
+
+            strTRid = details.Txnid;
+            strPInfo = details.ProductInfo;
+            strAmount = details.Amount.ToString();
+            strEmail = details.Email;
+            strFName = details.FirstName;
+            strSUrl = details.Surl;
+            strFUrl = details.Furl;
+            strPhone = details.Phone;
+            strHash = GenerateHash(details, salt);
+        }
+        catch (Exception ex)
+        {
+            ExceptionCapture.CaptureException(HttpContext.Current.Request.Url.PathAndQuery, "InitializePayUPayment", ex.Message);
+            throw;
         }
     }
 
-    //protected void btn_pay_now_Click(object sender, EventArgs e)
-    //{
-    //    if (Request.QueryString["order"] == null)
-    //    {
-    //        Response.Redirect("/");
-    //    }
-    //    try
-    //    {
-    //        double cost = 450;
-    //        string orderid = Convert.ToString(Request.QueryString["order"]);
-    //        Session["orderid"] = orderid;
-    //        string cart = string.Empty;
-    //        var ord = Reports.GetSingleOrderDetails(conMN, Request.QueryString["order"]).FirstOrDefault();
-    //        if (ord != null)
-    //        {
-    //            // strBilling = ord.BillingAddress;
-    //            // strDelivery = ord.DeliveryAddress;
-    //            //strSubTotal = ord.SubTotal == "0" || ord.SubTotal == "" || ord.SubTotal == null ? "₹ 0" : Convert.ToDecimal(ord.SubTotal).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            //strShipping = ord.ShippingPrice == "0" || ord.ShippingPrice == "" || ord.ShippingPrice == null ? "₹ 0" : Convert.ToDecimal(ord.ShippingPrice).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            //strDiscount = ord.Discount == "0" || ord.Discount == "" || ord.Discount == null ? "₹ 0" : Convert.ToDecimal(ord.Discount).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            //strCoupnDiscount = ord.Discount == "0" || ord.Discount == "" || ord.Discount == null ? "₹ 0" : Convert.ToDecimal(ord.Discount).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            //strTax = Convert.ToDecimal(ord.Tax).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-    //            strTotal = Convert.ToDecimal(450).ToString("C", CultureInfo.CreateSpecificCulture("en-IN"));
-
-    //            //divDiscount.Visible = false;
-    //            buyerEmail = ord.EmailId;
-    //            buyerName = ord.UserName;
-    //            BuyerMobile = ord.Contact;
-
-    //            cost = Convert.ToDouble(ord.TotalPrice);
-    //            paybleAmount = cost.ToString(); ;
-    //            buyerAmount = (cost * 100).ToString();
-
-    //            Session["payble"] = buyerAmount;
-
-    //            Dictionary<string, object> input = new Dictionary<string, object>();
-    //            input.Add("amount", buyerAmount); // this amount should be same as transaction amount
-    //            input.Add("currency", "INR");
-    //            input.Add("receipt", orderid);
-    //            input.Add("payment_capture", 1);
-    //            RazorpayClient client = new RazorpayClient(ConfigurationManager.AppSettings["razorid"], ConfigurationManager.AppSettings["razorsecret"]);
-    //            ServicePointManager.Expect100Continue = true;
-    //            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-    //            Razorpay.Api.Order order = client.Order.Create(input);
-    //            orderIdd = order["id"].ToString();
-
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-
-    //    }
-    //}
-
-    protected void btn_pay_now_Click(object sender, EventArgs e)
+    private void InitializePayPalPayment(string orderGuid, string totalAmount, string orderId, string userName, string email)
     {
-        CreateOrder();
+        try
+        {
+            string clientId = ConfigurationManager.AppSettings["PaypalClientId"];
+            string clientSecret = ConfigurationManager.AppSettings["PaypalSecretId"];
+            string mode = ConfigurationManager.AppSettings["PaypalMode"];
+            string domain = ConfigurationManager.AppSettings["domain"];
+
+            var config = new Dictionary<string, string>();
+            config.Add("mode", mode);
+            config.Add("clientId", clientId);
+            config.Add("clientSecret", clientSecret);
+
+            var accessToken = new OAuthTokenCredential(config).GetAccessToken();
+            var apiContext = new APIContext(accessToken) { Config = config };
+
+            List<Item> itemList = new List<Item>();
+            itemList.Add(new Item
+            {
+                name = "MedResearch Ninja Membership",
+                currency = "USD", // Change to your preferred currency
+                price = totalAmount,
+                quantity = "1",
+                sku = "MEMBERSHIP-" + orderId
+            });
+
+            ItemList items = new ItemList();
+            items.items = itemList;
+
+            // Create payment
+            var payment = PayPal.Api.Payment.Create(apiContext, new PayPal.Api.Payment
+            {
+                intent = "sale",
+                payer = new Payer
+                {
+                    payment_method = "paypal",
+                    payer_info = new PayerInfo()
+                    {
+                        email = email,
+                        first_name = userName,
+                        last_name = ""
+                    }
+                },
+                transactions = new List<Transaction>
+                {
+                    new Transaction
+                    {
+                        description = "MedResearch Ninja Membership Payment",
+                        invoice_number = orderId,
+                        amount = new Amount
+                        {
+                            currency = "USD", // Change to your preferred currency
+                            total = totalAmount,
+                            details = new Details
+                            {
+                                subtotal = totalAmount
+                            }
+                        },
+                        item_list = items
+                    }
+                },
+                redirect_urls = new RedirectUrls
+                {
+                    return_url = domain + "paypal-status.aspx?o=" + orderGuid,
+                    cancel_url = domain + "paypal-failed.aspx?o=" + orderGuid
+                }
+            });
+
+            // Redirect to PayPal
+            var links = payment.links.GetEnumerator();
+            while (links.MoveNext())
+            {
+                var link = links.Current;
+                if (link.rel.ToLower().Trim().Equals("approval_url"))
+                {
+                    Response.Redirect(link.href, false);
+                    HttpContext.Current.ApplicationInstance.CompleteRequest();
+                    return;
+                }
+            }
+        }
+        catch (ThreadAbortException)
+        {
+            // Ignore ThreadAbortException - it's expected with Response.Redirect
+        }
+        catch (Exception ex)
+        {
+            ExceptionCapture.CaptureException(HttpContext.Current.Request.Url.PathAndQuery, "InitializePayPalPayment", ex.Message);
+            Response.Redirect("pay-error.aspx", false);
+            HttpContext.Current.ApplicationInstance.CompleteRequest();
+        }
     }
 
     public static string GenerateHash(PayUAPIRequest details, string salt)
     {
-        //string input = "{key}|{txnid}|{amount}|{productinfo}|{firstname}|{email}|||||||||||{salt}";
         var hashString = details.Key + "|" + details.Txnid + "|" + details.Amount + "|" +
                          details.ProductInfo + "|" + details.FirstName + "|" + details.Email +
                          "|||||||||||" + salt;
@@ -258,5 +237,4 @@ public partial class pay_now : System.Web.UI.Page
             return sb.ToString();
         }
     }
-
 }

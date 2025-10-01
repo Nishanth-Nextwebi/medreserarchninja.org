@@ -82,6 +82,7 @@ public partial class project_payment_status : System.Web.UI.Page
                 orders.PaymentId = "";
                 orders.hostedCheckoutId = "";
                 orders.RMax = "";
+                orders.PaymentMode = "";
                 orders.ReceiptNo = "";
                 int x = PUserCheckout.UpdateUserOrder(conMN, orders);
                 Response.Redirect("pay-error.aspx");

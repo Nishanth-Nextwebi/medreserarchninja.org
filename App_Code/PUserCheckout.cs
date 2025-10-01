@@ -231,10 +231,11 @@ public class PUserCheckout
         int x = 0;
         try
         {
-            string query = "Insert into POrders (ProjectName,BalAmount, AdvAmount,Status,CODAmount,OrderGuid,ProjectGuid,OrderId, UserGuid,UserName,EmailId,Contact,msgcnt,OrderMax,ReceiptNo,RMax,SubTotal,ShippingPrice,Tax,Discount,TotalPrice,PromoCode,UserType,OrderStatus,PaymentMode,PaymentId,PaymentStatus,OrderOn,LastUpdatedOn,OrderedIp,PromoType,PromoValue,SubTotalWithoutTax) values (@ProjectName,@BalAmount, @AdvAmount, @Status,@CODAmount,@OrderGuid,@ProjectGuid,@OrderId, @UserGuid,@UserName,@EmailId,@Contact,@msgcnt,@OrderMax,@ReceiptNo,@RMax,@SubTotal,@ShippingPrice,@Tax,@Discount,@TotalPrice,@PromoCode,@UserType,@OrderStatus,@PaymentMode,@PaymentId,@PaymentStatus,@OrderOn,@LastUpdatedOn,@OrderedIp,@PromoType,@PromoValue,@SubTotalWithoutTax)";
+            string query = "Insert into POrders (ProjectName,PriceUSD,BalAmount, AdvAmount,Status,CODAmount,OrderGuid,ProjectGuid,OrderId, UserGuid,UserName,EmailId,Contact,msgcnt,OrderMax,ReceiptNo,RMax,SubTotal,ShippingPrice,Tax,Discount,TotalPrice,PromoCode,UserType,OrderStatus,PaymentMode,PaymentId,PaymentStatus,OrderOn,LastUpdatedOn,OrderedIp,PromoType,PromoValue,SubTotalWithoutTax) values (@ProjectName,@PriceUSD,@BalAmount, @AdvAmount, @Status,@CODAmount,@OrderGuid,@ProjectGuid,@OrderId, @UserGuid,@UserName,@EmailId,@Contact,@msgcnt,@OrderMax,@ReceiptNo,@RMax,@SubTotal,@ShippingPrice,@Tax,@Discount,@TotalPrice,@PromoCode,@UserType,@OrderStatus,@PaymentMode,@PaymentId,@PaymentStatus,@OrderOn,@LastUpdatedOn,@OrderedIp,@PromoType,@PromoValue,@SubTotalWithoutTax)";
             SqlCommand cmdOrder = new SqlCommand(query, conMN);
             cmdOrder.Parameters.AddWithValue("@OrderGuid", SqlDbType.NVarChar).Value = order.OrderGuid;
             cmdOrder.Parameters.AddWithValue("@ProjectGuid", SqlDbType.NVarChar).Value = order.ProjectGuid;
+            cmdOrder.Parameters.AddWithValue("@PriceUSD", SqlDbType.NVarChar).Value = order.PriceUSD;
             cmdOrder.Parameters.AddWithValue("@UserGuid", SqlDbType.NVarChar).Value = order.UserGuid;
             cmdOrder.Parameters.AddWithValue("@UserName", SqlDbType.NVarChar).Value = order.UserName == null ? "" : order.UserName;
             cmdOrder.Parameters.AddWithValue("@EmailId", SqlDbType.NVarChar).Value = order.EmailId;
@@ -426,7 +427,7 @@ public class PUserCheckout
         int x = 0;
         try
         {
-            SqlCommand cmdOrder = new SqlCommand("Update POrders Set UserName=@UserName,EmailId=@EmailId,Contact=@Contact, HostedCheckOutId=@hostedCheckoutId, PaymentStatus=@PaymentStatus,PaymentId=@PaymentId,ReceiptNo=@ReceiptNo,RMax=@RMax, OrderStatus=@OrderStatus Where OrderGuid=@OrderGuid", conMN);
+            SqlCommand cmdOrder = new SqlCommand("Update POrders Set UserName=@UserName,PaymentMode=@PaymentMode,EmailId=@EmailId,Contact=@Contact, HostedCheckOutId=@hostedCheckoutId, PaymentStatus=@PaymentStatus,PaymentId=@PaymentId,ReceiptNo=@ReceiptNo,RMax=@RMax, OrderStatus=@OrderStatus Where OrderGuid=@OrderGuid", conMN);
             cmdOrder.Parameters.AddWithValue("@OrderGuid", SqlDbType.NVarChar).Value = order.OrderGuid;
             cmdOrder.Parameters.AddWithValue("@PaymentStatus", SqlDbType.NVarChar).Value = order.PaymentStatus;
             cmdOrder.Parameters.AddWithValue("@UserName", SqlDbType.NVarChar).Value = order.UserName;
@@ -437,6 +438,7 @@ public class PUserCheckout
             cmdOrder.Parameters.AddWithValue("@ReceiptNo", SqlDbType.NVarChar).Value = order.ReceiptNo;
             cmdOrder.Parameters.AddWithValue("@RMax", SqlDbType.NVarChar).Value = order.RMax;
             cmdOrder.Parameters.AddWithValue("@OrderStatus", SqlDbType.NVarChar).Value = order.OrderStatus;
+            cmdOrder.Parameters.AddWithValue("@PaymentMode", SqlDbType.NVarChar).Value = order.PaymentMode;
             conMN.Open();
             x = cmdOrder.ExecuteNonQuery();
             conMN.Close();
@@ -915,6 +917,7 @@ public class POrders
     public string CODAmount { get; set; }
     public string AddDiscount { get; set; }
     public string TotalPrice { get; set; }
+    public string PriceUSD { get; set; }
     public string PromoCode { get; set; }
     public string UserType { get; set; }
     public string OrderStatus { get; set; }

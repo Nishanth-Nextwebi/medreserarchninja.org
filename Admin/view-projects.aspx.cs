@@ -39,6 +39,7 @@ public partial class Admin_view_projects : System.Web.UI.Page
                                         <td>" + P[i].Subject + @"</td>
                                         <td>" + P[i].MaxCollab + @"</td>
                                         <td>&#8377; " + Convert.ToDecimal(P[i].PriceINR).ToString("N0") + @"</td> 
+                                        <td>$ " + Convert.ToString(P[i].PriceOther) + @"</td> 
                                         <td>" + P[i].PostedOn.ToString("dd-MMM-yyyy") + @"</td>
                                         <td>" + chk + @"</td>
                                         <td class='text-center'> 

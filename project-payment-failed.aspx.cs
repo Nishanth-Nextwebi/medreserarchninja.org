@@ -27,6 +27,7 @@ public partial class project_payment_failed : System.Web.UI.Page
                 orders.OrderStatus = "Failed";
                 orders.PaymentId = "";
                 orders.hostedCheckoutId = "";
+                orders.PaymentMode = "";
                 orders.RMax = "";
                 orders.ReceiptNo = "";
                 int x = PUserCheckout.UpdateUserOrder(conMN, orders);

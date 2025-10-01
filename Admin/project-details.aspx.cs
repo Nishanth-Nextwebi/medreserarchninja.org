@@ -17,7 +17,6 @@ public partial class Admin_project_details : System.Web.UI.Page
     {
         BindMembers();
     }
-
     public void BindMembers()
     {
         try
@@ -102,7 +101,7 @@ public partial class Admin_project_details : System.Web.UI.Page
     }
 
     [WebMethod(EnableSession = true)]
-    public static string SendNotification(string p_guid, string m_guid, string amount, string cmts)
+    public static string SendNotification(string p_guid, string m_guid, string amount, string amountUSd, string cmts)
     {
         string x = "";
         try
@@ -113,15 +112,19 @@ public partial class Admin_project_details : System.Web.UI.Page
             }
             decimal dueAmount = 0;
             decimal.TryParse(Convert.ToString(amount), out dueAmount);
+            decimal dueAmountUSD = 0;
+            decimal.TryParse(Convert.ToString(amountUSd), out dueAmountUSD);
 
             SqlConnection conMN = new SqlConnection(ConfigurationManager.ConnectionStrings["conMN"].ConnectionString);
 
             ProjectDues dues = new ProjectDues();
 
             dues.ProjectGuid = p_guid;
+            dues.ProjectGuid = p_guid;
             dues.UserGuid = m_guid;
             dues.PaymentGuid = Guid.NewGuid().ToString();
             dues.Amount = dueAmount.ToString();
+            dues.AmountUSD = dueAmountUSD.ToString();
             dues.Comments = cmts;
             dues.PaymentMode = "";
             dues.PaymentId = "";
@@ -171,7 +174,7 @@ public partial class Admin_project_details : System.Web.UI.Page
 
                                         <p><strong>Project Name:</strong> " + project_name + @"<br>
                                         <strong>Project ID:</strong> #" + project_id + @"<br>
-                                        <strong>Due Amount:</strong> ₹" + dueAmount.ToString("##,##,##,###") + @"</p>
+                                        <strong>Due Amount:</strong> ₹" + dueAmount.ToString("##,##,##,###") + @" (~$" + dueAmountUSD + @")</p>
 
                                         <p>Please use the button below to log in and access the <strong>Payments</strong> section, where you can view and process your pending dues.</p>
 
@@ -264,6 +267,7 @@ public partial class Admin_project_details : System.Web.UI.Page
                     item.FullName = Convert.ToString(Dues.Rows[j]["FullName"]);
                     item.EmailId = Convert.ToString(Dues.Rows[j]["EmailId"]);
                     item.Amount = Convert.ToString(Dues.Rows[j]["Amount"]);
+                    item.AmountUSD = Convert.ToString(Dues.Rows[j]["AmountUSD"]);
                     item.Comments = Convert.ToString(Dues.Rows[j]["Comments"]);
                     item.PaymentMode = Convert.ToString(Dues.Rows[j]["PaymentMode"]);
                     item.PaymentId = Convert.ToString(Dues.Rows[j]["PaymentId"]);
@@ -322,11 +326,13 @@ public partial class Admin_project_details : System.Web.UI.Page
         {
             SqlConnection conMN = new SqlConnection(ConfigurationManager.ConnectionStrings["conMN"].ConnectionString);
             decimal dueAmount = 0;
+            decimal dueAmountUSD = 0;
 
             var pay_details = Projects.GetPaymentDetailsBy_PaymentGuid(conMN, pay_guid);
             if (pay_details.Rows.Count > 0)
             {
                 decimal.TryParse(Convert.ToString(pay_details.Rows[0]["amount"]), out dueAmount);
+                decimal.TryParse(Convert.ToString(pay_details.Rows[0]["AmountUSD"]), out dueAmountUSD);
 
                 int mailStatus = 0;
 
@@ -363,7 +369,7 @@ public partial class Admin_project_details : System.Web.UI.Page
 
                     <p><strong>Project ID:</strong> #" + project_id + @"<br>
                         <strong>Project Name:</strong> " + project_name + @"<br>
-                        <strong>Outstanding Amount:</strong> ₹" + dueAmount.ToString("##,##,##,###") + @"</p>
+                        <strong>Outstanding Amount:</strong> ₹" + dueAmount.ToString("##,##,##,###") + @" (~$" + dueAmountUSD + @")</p>
 
                     <p>Please click the button below to log in and access the <strong>Payments</strong> section to settle the pending amount.</p>
 
@@ -410,9 +416,10 @@ public partial class Admin_project_details : System.Web.UI.Page
             var MD = MemberDetails.GetMemberDetailsByGuid(conMN, mem_guid);
             var Proj = Projects.GetProjectDetailsByPGuid(conMN, ProjectGuid);
             decimal price = Convert.ToDecimal(Proj.PriceINR);
+            decimal priceUSD = Convert.ToDecimal(Proj.PriceOther);
             string oid = PUserCheckout.GetOMax(conMN);
             string OGuid = Guid.NewGuid().ToString();
-            string payType = "Payment Gateway";
+            string payType = "PayU";
             string ipAddress = CommonModel.IPAddress();
             DateTime orderedOn = TimeStamps.UTCTime();
             // Billingelivery 
@@ -465,6 +472,7 @@ public partial class Admin_project_details : System.Web.UI.Page
             PUserCheckout.InsertDeliveryAddress(conMN, delA);
 
             price = Convert.ToDecimal(Proj.PriceINR);
+            priceUSD = Convert.ToDecimal(Proj.PriceOther);
 
             string rId = PUserCheckout.GetRMax(conMN);
             // Insert the order
@@ -482,6 +490,7 @@ public partial class Admin_project_details : System.Web.UI.Page
                 PaymentMode = payType,
                 PaymentStatus = "Paid",
                 TotalPrice = (price).ToString(".##"),
+                PriceUSD = (priceUSD).ToString(".##"),
                 UserGuid = MD.UserGuid,
                 UserName = MD.FullName,
                 EmailId = MD.EmailId,

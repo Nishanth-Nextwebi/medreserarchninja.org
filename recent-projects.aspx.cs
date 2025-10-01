@@ -76,12 +76,12 @@ public partial class recent_projects : System.Web.UI.Page
                                                                                 <div class='new-flex-project mb20'>
                                                                                     <div>
                                                                                         <h5 class='title mb-1'>" + res[i].ProjectName + @"</h5>
-                                                                                        <p class='mb-0'>Start Date : " + res[i].StartDate +@" , Project code: " + res[i].ProjectId + @"</p>
+                                                                                        <p class='mb-0'>Start Date : " + res[i].StartDate + @" , Project code: " + res[i].ProjectId + @"</p>
                                                                                     </div>
                                                                                     <div class='review mb5'>
                                                                                         <div class='pending-style style1'>
                                                                                             <i class='flaticon-income fz16 dark-color pr10'></i>
-                                                                                            <span class='dark-color fw500'>₹ " + Convert.ToInt32(res[i].PriceINR).ToString("N2") + @"</span>
+                                                                                            <span class='dark-color fw500'>₹ " + Convert.ToInt32(res[i].PriceINR).ToString("N2") + @"  or $" + Convert.ToInt32(res[i].PriceOther) + @"</span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -89,7 +89,7 @@ public partial class recent_projects : System.Web.UI.Page
                                                                                   <div class='new-dec'>
                                                                                     <p class='text'>" + res[i].ShortDesc + @"</p>
                                                                                   </div>
-                                                                                    <a href='javascript:void(0);' class='toggle-button text-light btnoverview' data-bs-toggle='modal' data-bs-target='#OverviewModal' data-id='" + res[i].Id +@"' data-msg='"+ System.Net.WebUtility.HtmlEncode(res[i].ShortDesc) + @"'>Read More</a>
+                                                                                    <a href='javascript:void(0);' class='toggle-button text-light btnoverview' data-bs-toggle='modal' data-bs-target='#OverviewModal' data-id='" + res[i].Id + @"' data-msg='" + System.Net.WebUtility.HtmlEncode(res[i].ShortDesc) + @"'>Read More</a>
 
                                                                                 </div>
 
@@ -151,9 +151,10 @@ public partial class recent_projects : System.Web.UI.Page
                 var MD = MemberDetails.GetMemberDetailsByGuid(conMN, userGuid);
                 var Proj = Projects.GetProjectDetailsByPGuid(conMN, projectGuid);
                 decimal price = Convert.ToDecimal(Proj.PriceINR);
+                decimal priceUsd = Convert.ToDecimal(Proj.PriceOther);
                 string oid = PUserCheckout.GetOMax(conMN);
                 string OGuid = Guid.NewGuid().ToString();
-                string payType = "Payment Gateway";
+                string payType = "PayU";
                 string ipAddress = CommonModel.IPAddress();
                 DateTime orderedOn = TimeStamps.UTCTime();
 
@@ -208,6 +209,7 @@ public partial class recent_projects : System.Web.UI.Page
                 PUserCheckout.InsertDeliveryAddress(conMN, delA);
 
                 price = Convert.ToDecimal(Proj.PriceINR);
+                priceUsd = Convert.ToDecimal(Proj.PriceOther);
 
                 // Insert the order
                 POrders od = new POrders
@@ -224,6 +226,7 @@ public partial class recent_projects : System.Web.UI.Page
                     PaymentMode = payType,
                     PaymentStatus = "Initiated",
                     TotalPrice = (price).ToString(".##"),
+                    PriceUSD = (priceUsd).ToString(".##"),
                     UserGuid = MD.UserGuid,
                     UserName = MD.FullName,
                     EmailId = MD.EmailId,
@@ -257,6 +260,7 @@ public partial class recent_projects : System.Web.UI.Page
                     od.UserName = MD.FullName;
                     od.EmailId = MD.EmailId;
                     od.Contact = MD.Contact;
+                    od.PaymentMode = payType;
                     int x = PUserCheckout.UpdateUserOrder(conMN, od);
 
                     if (x > 0)

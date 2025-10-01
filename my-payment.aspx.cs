@@ -45,6 +45,8 @@ public partial class my_payment : System.Web.UI.Page
                 {
                     decimal dueAmount = 0;
                     decimal.TryParse(Convert.ToString(dues.Rows[i]["Amount"]), out dueAmount);
+                    decimal dueAmountUsd = 0;
+                    decimal.TryParse(Convert.ToString(dues.Rows[i]["AmountUSD"]), out dueAmountUsd);
 
                     string pStatus = "", btnPayNow = "";
                     if (Convert.ToString(dues.Rows[i]["PaymentStatus"]).ToLower() == "paid")
@@ -62,7 +64,7 @@ public partial class my_payment : System.Web.UI.Page
                                        "<td>" + (i + 1) + "</td>" +
                                        "<td><span class='badge badge-outline-primary'>" + Convert.ToString(dues.Rows[i]["ProjectId"]) + "</span></td>" +
                                        "<td class='pName'>" + Convert.ToString(dues.Rows[i]["ProjectName"]) + "</td>" +
-                                       "<td>₹" + dueAmount.ToString("##,##,##,###") + "</td>" +
+                                       "<td>₹" + dueAmount.ToString("##,##,##,###") + " or $" + dueAmountUsd.ToString("N0") + @"</td>" +
                                        "<td>" + pStatus + "</td>" +
                                        "<td>" + (!string.IsNullOrEmpty(Convert.ToString(dues.Rows[i]["PaymentDate"])) ? Convert.ToDateTime(dues.Rows[i]["PaymentDate"]).ToString("dd-MMM-yyyy hh:mm tt") : "--") + "</td>" +
                                        "<td>" + btnPayNow + @"</td>" +

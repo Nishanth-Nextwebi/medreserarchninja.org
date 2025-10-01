@@ -222,7 +222,6 @@ public partial class signup : System.Web.UI.Page
 
                         if (x > 0)
                         {
-
                             Response.Redirect("pay-now.aspx?order=" + OGuid);
                         }
                     }

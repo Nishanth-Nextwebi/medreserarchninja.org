@@ -109,6 +109,8 @@
                                                     <th class="nosort">Project Name</th>
                                                     <th class="nosort">Project Status</th>
                                                     <th class="nosort">Total Price</th>
+                                                    <th class="nosort">Payment By</th>
+                                                    <th class="nosort">Paid Amount</th>
                                                     <th class="nosort">Payment Status</th>
                                                     <th class="nosort">Payment Id</th>
                                                     <th class="nosort">Order On</th>

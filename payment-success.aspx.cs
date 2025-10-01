@@ -14,6 +14,7 @@ public partial class payment_success : System.Web.UI.Page
     public string strStatus = "";
 
     protected void Page_Load(object sender, EventArgs e)
+    
     {
         if (Request.QueryString["O"] != null)
         {
@@ -22,7 +23,7 @@ public partial class payment_success : System.Web.UI.Page
                 "<strong>Thank you for your membership! </strong></h3><h5 class='mt-2'>Please check your email for further instructions, including a link to join our exclusive WhatsApp group." +
 
                 "Stay connected, collaborate with fellow researchers, and stay tuned for exclusive updates, resources, and opportunities!</h5>";
-            var orderid = Request.QueryString["o"];
+            var orderid = Request.QueryString["O"];
             //UserCheckout.SendToUser(conMN, orderid);
             var order = Reports.GetSingleOrderDetailsWOid(conMN, orderid);
             if(order.PaymentStatus != "Paid")

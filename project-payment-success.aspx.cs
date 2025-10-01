@@ -42,6 +42,7 @@ public partial class project_payment_success : System.Web.UI.Page
                         orders.PaymentStatus = "Paid";
                         orders.OrderStatus = "Completed";
                         orders.UserName = order.UserName;
+                         orders.PaymentMode = "PayU";
                         orders.EmailId = order.EmailId;
                         orders.Contact = order.Contact;
                         orders.PaymentId = exe1.Transaction_Details[order.OrderGuid].Mihpayid;

@@ -3,14 +3,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- css file -->
     <link rel="shortcut icon" href="/new-img/fab.png" type="image/x-icon" />
-
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/jquery-ui.min.css">
     <link rel="stylesheet" href="/css/ace-responsive-menu.css">
@@ -32,7 +30,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Favicon -->
-
     <style>
         .header-logo img {
             width: 150px;
@@ -67,48 +64,52 @@
         .pay-left h4 {
             font-weight: 700;
         }
-        @media (min-width:320px) and (max-width:767px) {
-            .mobile_logo img{
-                width:120px;
-            }
-            .mobile-menu{
-                background:#000;
-            }
-            .menubar img{
-                filter:invert(1);
-            }
-            .pay-left h4{
-                font-size:14px !important;
 
+        @media (min-width:320px) and (max-width:767px) {
+            .mobile_logo img {
+                width: 120px;
             }
-            .pay-right h4{
-                font-size:14px !important;
-    
+
+            .mobile-menu {
+                background: #000;
+            }
+
+            .menubar img {
+                filter: invert(1);
+            }
+
+            .pay-left h4 {
+                font-size: 14px !important;
+            }
+
+            .pay-right h4 {
+                font-size: 14px !important;
             }
         }
-         @media (min-width:768px) and (max-width:991px) {
-     .mobile_logo img{
-         width:120px;
-     }
-     .mobile-menu{
-         background:#000;
-     }
-     .menubar img{
-         filter:invert(1);
-     }
- }
 
-         .btn-danger {
-    color: #fff;
-    background-color: #ff7f3e;
-    border-color: #ff7f3e;
-}
+        @media (min-width:768px) and (max-width:991px) {
+            .mobile_logo img {
+                width: 120px;
+            }
+
+            .mobile-menu {
+                background: #000;
+            }
+
+            .menubar img {
+                filter: invert(1);
+            }
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #ff7f3e;
+            border-color: #ff7f3e;
+        }
     </style>
-
 </head>
 <body>
     <div class="page-wrapper">
-
         <div class="new-head ">
 
             <header class="header-nav nav-homepage-style main-menu border-0">
@@ -148,7 +149,6 @@
                 </nav>
             </header>
         </div>
-
 
         <div id="page" class="mobilie_header_nav stylehome1">
             <div class="mobile-menu">
@@ -200,109 +200,94 @@
         <div>
             <div class="section-padding">
                 <div class="container p-t80">
-
-
-                    <!-- Checkout Start -->
                     <div class="checkout-wrapper">
-
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
                                 <div class="pay-card">
                                     <div class="section-title">
                                         <h1 class="title">Pay Now</h1>
                                     </div>
+
+                                    <!-- Payment Gateway Info -->
+                                    <div class="payment-gateway-info d-none">
+                                        <h5><i class="fas fa-info-circle"></i>Payment Gateway</h5>
+                                        <p class="mb-0">
+                                            <strong>Selected Gateway:</strong> <%=PaymentGateway %>
+                                            <br />
+                                            <small class="text-muted">Detected Country: <%=UserCountryCode %></small>
+                                        </p>
+                                    </div>
+
                                     <div class="row mt-5">
                                         <div class="col-lg-12">
-
-
-
-
-
-
-
                                             <div class="pay-details d-flex align-items-center">
                                                 <div class="pay-left">
                                                     <h4>Full Name : &nbsp</h4>
                                                 </div>
                                                 <div class="pay-right">
-
                                                     <h4><%=buyerName %></h4>
                                                 </div>
                                             </div>
-                                            <div class="pay-details d-flex align-items-center">
 
+                                            <div class="pay-details d-flex align-items-center">
                                                 <div class="pay-left">
                                                     <h4>Email ID : &nbsp</h4>
                                                 </div>
                                                 <div class="pay-right">
-
                                                     <h4 style="word-break: break-all"><%=buyerEmail %></h4>
                                                 </div>
                                             </div>
-                                            <div class="pay-details d-flex align-items-center">
 
+                                            <div class="pay-details d-flex align-items-center">
                                                 <div class="pay-left">
                                                     <h4>Contact : &nbsp</h4>
                                                 </div>
                                                 <div class="pay-right">
-
                                                     <h4><%=BuyerMobile %></h4>
                                                 </div>
                                             </div>
-                                            <%-- <div class="pay-details d-flex align-items-center">
 
-                                                <div class="pay-left">
-                                                    <h4>Country :</h4>
-                                                </div>
-                                                <div class="pay-right">
-
-                                                    <h4><%=strCountry %></h4>
-                                                </div>
-                                            </div>--%>
                                             <div class="pay-details d-flex align-items-center">
-
                                                 <div class="pay-left">
                                                     <h4>Total Amount :&nbsp;</h4>
                                                 </div>
                                                 <div class="pay-right">
-
                                                     <h4><%=strTotal %></h4>
                                                 </div>
                                             </div>
+
                                             <hr />
+                                            <% if (!IsPayPalPayment)
+                                                { %>
                                             <div class="checkout-details-in amount-payable d-flex justify-content-start">
-                                                <%-- <form runat="server">
-                                                    <asp:Button ID="btn_pay_now" runat="server" Text="Pay Now" class="payment-button" OnClick="btn_pay_now_Click"></asp:Button>
-                                                </form>--%>
                                                 <div class="row w100">
                                                     <div class="col-lg-12">
-                                                        <div class="row w100">
-
-                                                            <form action='<%=ConfigurationManager.AppSettings["ENVURL"] %>_payment' method='post'>
-                                                                <input type="hidden" name="key" value="<%=strKey %>" />
-                                                                <input type="hidden" name="txnid" value="<%=strTRid %>" />
-                                                                <input type="hidden" name="productinfo" value="<%=strPInfo %>" />
-                                                                <input type="hidden" name="amount" value="<%=strAmount %>" />
-                                                                <input type="hidden" name="email" value="<%=strEmail %>" />
-                                                                <input type="hidden" name="firstname" value="<%=strFName %>" />
-                                                               <%-- <input type="hidden" name="lastname" value="<%=strLname %>" />--%>
-                                                                <input type="hidden" name="surl" value="<%=strSUrl %>" />
-                                                                <input type="hidden" name="furl" value="<%=strFUrl %>" />
-                                                                <input type="hidden" name="phone" value="<%=strPhone %>" />
-                                                                <input type="hidden" name="hash" value="<%=strHash %>" />
-                                                                <input type="submit" value="Submit" class="btnpay">
-                                                            </form>
-                                                            <script src="/js/jquery-3.6.4.min.js"></script>
-                                                             <script>
-                                                                 $(document).ready(function () {
-                                                                     $(".btnpay").addClass("btn btn-danger btn-hover-dark text-white");
-                                                                     //$(".btnpay").click();
-                                                                 });
-                                                             </script>
-                                                        </div>
+                                                        <form action='<%=ConfigurationManager.AppSettings["ENVURL"] %>_payment' method='post'>
+                                                            <input type="hidden" name="key" value="<%=strKey %>" />
+                                                            <input type="hidden" name="txnid" value="<%=strTRid %>" />
+                                                            <input type="hidden" name="productinfo" value="<%=strPInfo %>" />
+                                                            <input type="hidden" name="amount" value="<%=strAmount %>" />
+                                                            <input type="hidden" name="email" value="<%=strEmail %>" />
+                                                            <input type="hidden" name="firstname" value="<%=strFName %>" />
+                                                            <input type="hidden" name="surl" value="<%=strSUrl %>" />
+                                                            <input type="hidden" name="furl" value="<%=strFUrl %>" />
+                                                            <input type="hidden" name="phone" value="<%=strPhone %>" />
+                                                            <input type="hidden" name="hash" value="<%=strHash %>" />
+                                                            <input type="submit" value="Pay with PayU" class="btn btn-danger btn-hover-dark text-white">
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <% }
+                                                else
+                                                { %>
+                                            <div class="text-center">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                                <p class="mt-3">Redirecting to PayPal...</p>
+                                            </div>
+                                            <% } %>
                                         </div>
                                     </div>
                                 </div>
@@ -311,31 +296,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
-        <%-- <div class="menubar-area footer-fixed">
-            <div class="toolbar-inner menubar-nav">
-                <a href="/" class="nav-link active">
-                    <i class="fi fi-rr-home"></i>
-                </a>
-                <a href="/wishlist.aspx" class="nav-link">
-                    <i class="fi fi-rr-heart"></i>
-                </a>
-                <a href="/cart.aspx" class="nav-link">
-                    <i class="fi fi-rr-shopping-cart"></i>
-                    <span class="cart-badge">14</span>
-                </a>
-                <a href="/category/All" class="nav-link">
-                    <i class="fi  fi-rr-document-signed"></i>
-                </a>
-                 <a href="/profile.aspx" class="nav-link">
-                    <i class="fi fi-rr-user"></i>
-                </a>
-            </div>
-        </div>--%>
-    </div>
 
-    <!-- Our Footer -->
+
+    </div>
     <section class="footer-style1 at-home6 bg-dark section-padding pb-0">
         <div class="container">
 
@@ -432,7 +396,7 @@
         </div>
     </section>
     <a class="scrollToHome at-home2" href="javascript:void(0);"><i class="fas fa-angle-up"></i></a>
-    </div>
+
     <script src="/js/jquery-3.6.4.min.js"></script>
     <script src="/js/snackbar/snackbar.min.js"></script>
     <script src="/js/popper.min.js"></script>

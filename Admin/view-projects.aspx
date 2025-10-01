@@ -44,6 +44,7 @@
                                         <th>Subject</th>
                                         <th>MaxCollab</th>
                                         <th>PriceINR</th>
+                                        <th>PriceUSD</th>
                                         <th>Updated On</th>
                                         <th>Publish?</th>
                                         <th class="text-center">Action</th>

@@ -77,7 +77,7 @@ public partial class Admin_view_complete_report : System.Web.UI.Page
                     string PaymentStatus = Convert.ToString(order.Rows[i]["PaymentStatus"]);
                     string orderGuid = Convert.ToString(order.Rows[i]["OrderGuid"]);
                     string payStatus = "", payStatus1 = "";
-
+                    var paidAmount = "0";
                     switch (PaymentStatus.ToLowerInvariant())
                     {
                         case "initiated":
@@ -86,6 +86,21 @@ public partial class Admin_view_complete_report : System.Web.UI.Page
                             break;
 
                         case "paid":
+                            if (!string.IsNullOrEmpty(Convert.ToString(order.Rows[i]["PaymentMode"])))
+                            {
+                                if (Convert.ToString(order.Rows[i]["PaymentMode"]).ToLower() == "payu")
+                                {
+                                    paidAmount = "<strong>₹" + Convert.ToString(order.Rows[i]["TotalPrice"]) + @"</strong>";
+                                }
+                                else if (Convert.ToString(order.Rows[i]["PaymentMode"]).ToLower() == "paypal")
+                                {
+                                    paidAmount = "<strong>$" + Convert.ToString(order.Rows[i]["PriceUSD"]) + @"</strong>";
+                                }
+                                else
+                                {
+                                    paidAmount = "0";
+                                }
+                            }
                             payStatus = "<span class='badge badge-soft-success badge-border'>Paid</span>";
                             payStatus1 = "<a href='javascript:void(0);' id='mute_" + Convert.ToString(order.Rows[i]["OrderGuid"]) + @"' class='bs-tooltip fs-18 link-success' data-id='" + Convert.ToString(order.Rows[i]["OrderGuid"]) + @"'  data-bs-toggle='tooltip' data-placement='top'  title='Paid'><i id='icon_" + Convert.ToString(order.Rows[i]["OrderGuid"]) + @"' class='mdi mdi-currency-inr text-muted'></i></a>";
                             break;
@@ -113,6 +128,7 @@ public partial class Admin_view_complete_report : System.Web.UI.Page
                             break;
                     }
 
+
                     decimal totalAmount = 0;
                     decimal.TryParse(Convert.ToString(order.Rows[i]["TotalPrice"]), out totalAmount);
 
@@ -126,7 +142,9 @@ public partial class Admin_view_complete_report : System.Web.UI.Page
                                     <td>" + Convert.ToString(order.Rows[i]["Contact"]) + @"</td>
                                     <td>" + Convert.ToString(order.Rows[i]["ProjectName"]) + @"</td> 
                                     <td>" + ordStatus + @"</td> 
-                                    <td><strong>₹" + (totalAmount > 0 ? totalAmount.ToString("##,##,##,###") : "0") + @"</strong></td> 
+                                    <td><strong>₹" + totalAmount + @" (~ $" + Convert.ToString(order.Rows[i]["PriceUSD"]) + @")</strong></td> 
+                                    <td>" + Convert.ToString(order.Rows[i]["PaymentMode"]) + @"</td> 
+                                    <td>" + paidAmount + @"</td> 
                                     <td>" + payStatus + @"</td> 
                                     <td>" + (string.IsNullOrEmpty(Convert.ToString(order.Rows[i]["PaymentId"])) ? "-" : Convert.ToString(order.Rows[i]["PaymentId"])) + @"</td>
                                     <td>" + Convert.ToDateTime(Convert.ToString(order.Rows[i]["OrderOn"])).ToString("dd-MMM-yyyy hh:mm tt") + @"</td>

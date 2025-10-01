@@ -6,10 +6,12 @@
             background-color: #426CB4 !important;
             color: white !important;
         }
+
         .fs-wrap.multiple .fs-option {
             background: White;
             color: #000;
         }
+
         .fs-option.selected {
             background-color: #426CB4 !important;
             color: white !important;
@@ -56,12 +58,15 @@
                                     <label>Price (INR)<sup></sup></label>
                                     <div class="input-group">
                                         <span class="input-group-text">₹</span>
-                                        <asp:TextBox runat="server" class="form-control onlyNum" ID="txtPriceINR" placeholder="Price INR" MaxLength="10" />
+                                        <asp:TextBox runat="server" class="form-control numWPts" ID="txtPriceINR" placeholder="Price INR" MaxLength="10" />
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <label>Price (Other)</label>
-                                    <asp:TextBox runat="server" class="form-control mb-2 mr-sm-2 onlyNum" ID="txtPriceOther" placeholder="Price (Other)" MaxLength="10" />
+                                    <label>Price (USD)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <asp:TextBox runat="server" class="form-control numWPts" ID="txtPriceOther" placeholder="10.00" MaxLength="10" />
+                                    </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <label>Whatsapp Group Link<sup>*</sup></label>
